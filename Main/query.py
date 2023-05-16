@@ -21,6 +21,7 @@ def query(chargerId):
     data = '{"str":"' + chargerId + '}","userid_locked":"' + userid_locked.decode(
         'utf8') + '","version":"4.0.0","platform":"applet"}'
     response = requests.post(url=url, data=data, headers=header)
+    print(str(chargerId) + ":" + str(response.json()))
     msg = response.json()['msg']
     if re.search(r'端口被占用', msg) is not None:
         hours = re.findall(r'[0-9]*', msg)

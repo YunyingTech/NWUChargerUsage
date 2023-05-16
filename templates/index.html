@@ -8,31 +8,78 @@
         <div id="title_logo">充电桩查询系统</div>
     </div>
     <div class="main">
-
+        <div class="east">
+            <h2>东区</h2>
+            <table>
+                <thead>
+                <tr>
+                    <th>
+                        使用编号
+                    </th>
+                    <th>
+                        可用情况
+                    </th>
+                    <th>
+                        剩余时间
+                    </th>
+                </tr>
+                </thead>
+                <tbody id="east-table">
+                </tbody>
+            </table>
+        </div>
+        <div class="west">
+            <h2>西区</h2>
+            <table>
+                <thead>
+                <tr>
+                    <th>
+                        使用编号
+                    </th>
+                    <th>
+                        可用情况
+                    </th>
+                    <th>
+                        剩余时间
+                    </th>
+                </tr>
+                </thead>
+                <tbody id="west-table">
+                </tbody>
+            </table>
+        </div>
     </div>
     <script>
-        function process(id){
-            $.ajax({
-                    type: "get",        // 请求方式
-                    url: "/query?id=02342" + id, // 请求路径
-                    dataType: "json",   // 预期返回一个 json 类型数据
-                    success: function (data) {   // data是形参名，代表返回的数据
-                        console.log(data);
-                        for (var dt in data) {
-                            let divInnerHTML = '';
-                            if (data[dt]['status'] === 1) {
-                                divInnerHTML = '<div class="charger red-led"><div class="labels"><label class="id">' + dt + '号</label><label class="id">' + data[dt]['time'][0] + "小时" + data[dt]['time'][1] + "分钟" + '</label></div></div>'
-                            } else if (data[dt]['status'] === 0) {
-                                divInnerHTML = '<div class="charger green-led"><div class="labels"><label class="id">' + dt + '号</label><label class="id">空闲</label></div></div>'
-                            }
-                            $('.main').append(divInnerHTML)
-                        }
-                    }
-                })
+        function PrefixInteger(num, length) {
+            return (num / Math.pow(10, length)).toFixed(length).substr(2);
         }
+
+        function process(id, name) {
+            $.ajax({
+                type: "get",        // 请求方式
+                url: "/query?id=02342" + PrefixInteger(id,3), // 请求路径
+                dataType: "json",   // 预期返回一个 json 类型数据
+                success: function (data) {   // data是形参名，代表返回的数据
+                    console.log(data);
+                    for (var dt in data) {
+                        let divInnerHTML = '';
+                        if (data[dt]['status'] === 1) {
+                            divInnerHTML = "<tr style='color: red'><td>" + dt + "</td><td>" + "占用" + "</td><td>" + data[dt]["time"][0] + "小时" + data[dt]["time"][0] + "分钟" + "</td></tr>"
+                        } else if (data[dt]['status'] === 0) {
+                            divInnerHTML = "<tr style='color: green'><td>" + dt + "</td><td>" + "空闲" + "</td><td></td></tr>"
+                        }
+                        $(name).append(divInnerHTML)
+                    }
+                }
+            })
+        }
+
         $(document).ready(function () {
-            for(var i = 100;i<134;i++){
-                process(i)
+            for (var i = 98; i <= 109; i++) {
+                process(i, '#east-table')
+            }
+            for (var i = 110; i <= 121; i++) {
+                process(i, '#west-table')
             }
         })
     </script>
