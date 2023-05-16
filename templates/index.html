@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+    充电桩查询系统
+{% endblock %}
+{% block body %}
+    <div class="nav">
+        <div id="title_logo">充电桩查询系统</div>
+    </div>
+    <div class="main">
+
+    </div>
+    <script>
+        function process(id){
+            $.ajax({
+                    type: "get",        // 请求方式
+                    url: "/query?id=02342" + id, // 请求路径
+                    dataType: "json",   // 预期返回一个 json 类型数据
+                    success: function (data) {   // data是形参名，代表返回的数据
+                        console.log(data);
+                        for (var dt in data) {
+                            let divInnerHTML = '';
+                            if (data[dt]['status'] === 1) {
+                                divInnerHTML = '<div class="charger red-led"><div class="labels"><label class="id">' + dt + '号</label><label class="id">' + data[dt]['time'][0] + "小时" + data[dt]['time'][1] + "分钟" + '</label></div></div>'
+                            } else if (data[dt]['status'] === 0) {
+                                divInnerHTML = '<div class="charger green-led"><div class="labels"><label class="id">' + dt + '号</label><label class="id">空闲</label></div></div>'
+                            }
+                            $('.main').append(divInnerHTML)
+                        }
+                    }
+                })
+        }
+        $(document).ready(function () {
+            for(var i = 100;i<134;i++){
+                process(i)
+            }
+        })
+    </script>
+{% endblock %}
+
