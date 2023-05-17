@@ -49,24 +49,37 @@
             </table>
         </div>
     </div>
+
+    <div style="float: right;margin: 60px" id="qrcodeDiv">
+        <label id="chargerIdLabel"></label>
+        <div id="qrcode"></div>
+    </div>
     <script>
+
         function PrefixInteger(num, length) {
             return (num / Math.pow(10, length)).toFixed(length).substr(2);
+        }
+
+        function clickA(obj) {
+            document.getElementById('qrcode').innerHTML = ''
+            new QRCode(document.getElementById("qrcode"), 'https://cd1a.cn/?s=' + $(obj).attr("id"))
+            document.getElementById('chargerIdLabel').innerHTML = $(obj).attr("id")
         }
 
         function process(id, name) {
             $.ajax({
                 type: "get",        // 请求方式
-                url: "/query?id=02342" + PrefixInteger(id,3), // 请求路径
+                url: "/query?id=02342" + PrefixInteger(id, 3), // 请求路径
                 dataType: "json",   // 预期返回一个 json 类型数据
                 success: function (data) {   // data是形参名，代表返回的数据
+                    var chargerId = "02342" + PrefixInteger(id, 3)
                     console.log(data);
                     for (var dt in data) {
                         let divInnerHTML = '';
                         if (data[dt]['status'] === 1) {
-                            divInnerHTML = "<tr style='color: red'><td>" + dt + "</td><td>" + "占用" + "</td><td>" + data[dt]["time"][0] + "小时" + data[dt]["time"][0] + "分钟" + "</td></tr>"
+                            divInnerHTML = "<tr style='color: red'><td>" + dt + "</td><td><a id='" + chargerId + "' onclick='clickA(this)'>占用<a>" + "</td><td>" + data[dt]["time"][0] + "小时" + data[dt]["time"][1] + "分钟" + "</td></tr>"
                         } else if (data[dt]['status'] === 0) {
-                            divInnerHTML = "<tr style='color: green'><td>" + dt + "</td><td>" + "空闲" + "</td><td></td></tr>"
+                            divInnerHTML = "<tr style='color: green'><td>" + dt + "</td><td><a id='" + chargerId + "' onclick='clickA(this)'>空闲<a></td><td></td></tr>"
                         }
                         $(name).append(divInnerHTML)
                     }

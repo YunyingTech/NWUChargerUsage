@@ -52,7 +52,7 @@
 
 .green-led {
     border: 3px #44FF3b solid;
-    -webkit-box-shadow:2px -2px 10px #44FF3b;
+    -webkit-box-shadow: 2px -2px 10px #44FF3b;
 }
 
 .labels {
@@ -60,4 +60,12 @@
     margin: auto;
     height: 100%;
     position: relative;
+}
+
+#qrcode {
+    position: relative;
+}
+
+.main {
+    float: left;
 }
